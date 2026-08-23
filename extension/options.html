@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>立创物料一键入库 - 设置</title>
+  <style>
+    body{margin:0;background:#f4f7fa;color:#1f2d3d;font:14px/1.5 "Microsoft YaHei UI",sans-serif}.card{width:min(600px,calc(100vw - 32px));margin:50px auto;padding:26px;background:#fff;border:1px solid #e3e9ef;border-radius:12px;box-shadow:0 8px 30px #1c304510}h1{margin:0 0 7px;font-size:21px}p{margin:0 0 24px;color:#697789}label{display:block;margin:15px 0 6px;color:#536174;font-size:12px}input{width:100%;box-sizing:border-box;height:42px;padding:0 11px;border:1px solid #dce3ea;border-radius:7px;outline:none}input:focus{border-color:#72b7f2;box-shadow:0 0 0 3px #1386e912}.actions{display:flex;gap:9px;margin-top:20px}button,a{display:inline-grid;place-items:center;min-height:40px;padding:0 16px;border-radius:7px;border:1px solid #dce3ea;background:#fff;color:#435268;font-weight:600;text-decoration:none;cursor:pointer}button.primary{border-color:#1383e8;background:#1383e8;color:#fff}#status{min-height:22px;margin-top:15px;color:#16865f}#status.error{color:#c03948}.hint{margin-top:22px;padding:13px;border-radius:7px;background:#eff6fd;color:#51657a;font-size:12px}
+  </style>
+</head>
+<body><main class="card">
+  <h1>立创物料一键入库</h1><p>连接本机运行的物料管理系统。服务地址通常不需要修改。</p>
+  <label for="serviceUrl">本地服务地址</label><input id="serviceUrl" value="http://127.0.0.1:8765">
+  <label for="token">连接密钥</label><input id="token" placeholder="从物料系统 → 系统设置中复制">
+  <div class="actions"><button id="save" class="primary">保存并测试连接</button><a href="http://127.0.0.1:8765" target="_blank">打开物料系统</a></div>
+  <div id="status"></div>
+  <div class="hint">安装后只需配置一次。在立创商城商品详情页右侧点击“加入我的物料库”，系统会使用默认数量和默认仓位直接入库。</div>
+  <script src="options.js"></script>
+</main></body></html>

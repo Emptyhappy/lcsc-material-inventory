@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>我的物料库</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/enhancements.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">M</div>
+        <div><strong>我的物料库</strong><span>本地库存管理</span></div>
+      </div>
+      <nav class="main-nav" aria-label="主导航">
+        <button class="nav-item active" data-view="materials"><span>▦</span>物料列表</button>
+        <button class="nav-item" data-view="transactions"><span>⇄</span>库存流水</button>
+        <button class="nav-item" data-view="settings"><span>⚙</span>系统设置</button>
+      </nav>
+      <div class="category-heading">
+        <span>物料分类</span>
+        <button id="refreshCategories" title="刷新分类">↻</button>
+      </div>
+      <div class="category-search"><input id="categorySearch" placeholder="搜索分类"></div>
+      <div id="categoryTree" class="category-tree"></div>
+      <div class="sidebar-footer">
+        <span class="status-dot"></span><span id="serviceStatus">本地服务已连接</span>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <h1 id="pageTitle">全部物料</h1>
+          <p id="pageSubtitle">管理你手头的电子元器件</p>
+        </div>
+        <div class="topbar-actions">
+          <label class="global-search">
+            <span>⌕</span>
+            <input id="materialSearch" placeholder="搜索名称、型号、C编号">
+          </label>
+          <button class="button secondary" id="exportButton">导出 Excel</button>
+          <button class="button primary" id="addMaterialButton">＋ 手动添加</button>
+        </div>
+      </header>
+
+      <section id="materialsView" class="view active">
+        <div class="stats-grid">
+          <button class="stat-card" id="allStat">
+            <span class="stat-icon blue">▦</span><span><small>物料种类</small><strong id="materialCount">0</strong></span>
+          </button>
+          <div class="stat-card">
+            <span class="stat-icon green">Σ</span><span><small>库存总量</small><strong id="stockTotal">0</strong></span>
+          </div>
+          <button class="stat-card" id="lowStockStat">
+            <span class="stat-icon orange">!</span><span><small>低库存</small><strong id="lowStockCount">0</strong></span>
+          </button>
+          <div class="stat-card">
+            <span class="stat-icon gray">○</span><span><small>零库存</small><strong id="zeroStockCount">0</strong></span>
+          </div>
+        </div>
+
+        <div class="panel material-panel">
+          <div class="panel-header">
+            <div><strong id="tableTitle">全部物料</strong><span id="resultCount" class="muted"></span></div>
+            <label class="check-filter"><input id="lowStockOnly" type="checkbox"> 只看低库存</label>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>物料</th><th>型号 / 立创编号</th><th>分类</th><th>封装</th><th>仓位</th><th class="number">库存</th><th></th></tr></thead>
+              <tbody id="materialsBody"></tbody>
+            </table>
+            <div id="materialsEmpty" class="empty-state hidden">
+              <div>▦</div><strong>还没有符合条件的物料</strong><p>可以手动添加，或使用浏览器扩展从立创商城一键加入。</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="transactionsView" class="view">
+        <div class="panel">
+          <div class="panel-header"><strong>库存流水</strong><span class="muted">每次入库、出库和撤销都保留记录</span></div>
+          <div class="table-wrap"><table>
+            <thead><tr><th>时间</th><th>物料</th><th>操作</th><th>仓位</th><th class="number">数量变化</th><th>备注</th></tr></thead>
+            <tbody id="transactionsBody"></tbody>
+          </table></div>
+        </div>
+      </section>
+
+      <section id="settingsView" class="view">
+        <div class="settings-grid">
+          <div class="panel settings-card">
+            <h2>一键添加默认值</h2><p>从立创商城点击按钮时，不弹窗，直接使用以下设置。</p>
+            <form id="settingsForm" class="form-stack">
+              <label>默认添加数量<input id="defaultQuantity" type="number" min="0.001" step="any" required></label>
+              <label>默认仓位<select id="defaultLocation"></select></label>
+              <button class="button primary" type="submit">保存默认设置</button>
+            </form>
+          </div>
+          <div class="panel settings-card">
+            <h2>仓位管理</h2><p>新建货架、盒子或抽屉位置。</p>
+            <form id="locationForm" class="inline-form">
+              <input id="newLocationName" placeholder="例如 A柜-03盒-02格" required>
+              <button class="button secondary" type="submit">添加</button>
+            </form>
+            <div id="locationTags" class="tag-list"></div>
+          </div>
+          <div class="panel settings-card">
+            <h2>立创分类</h2><p>从立创商城公开分类页更新完整分类树，已有物料不会丢失。</p>
+            <div class="setting-row"><span>上次同步</span><strong id="lastCategorySync">尚未同步</strong></div>
+            <button id="syncCategoriesButton" class="button secondary">同步立创分类</button>
+          </div>
+          <div class="panel settings-card">
+            <h2>浏览器扩展连接</h2><p>将密钥复制到扩展设置中。密钥只用于连接这台电脑。</p>
+            <label>本地服务地址<input value="http://127.0.0.1:8765" readonly></label>
+            <label>连接密钥<div class="copy-field"><input id="extensionToken" type="password" readonly><button id="copyToken" type="button">复制</button></div></label>
+          </div>
+          <div class="panel settings-card">
+            <h2>数据备份</h2><p>数据库保存在 <code>data/materials.db</code>，停止服务后复制该文件即可完整备份。</p>
+            <button id="settingsExportButton" class="button secondary">导出物料 CSV</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="manualDialog" class="modal">
+    <form id="manualForm">
+      <div class="modal-header"><div><h2>手动添加物料</h2><p>数量和仓位留空时使用系统默认值。</p></div><button type="button" class="icon-button close-dialog">×</button></div>
+      <div class="form-grid">
+        <label class="wide">物料名称<input name="name" placeholder="例如 10kΩ贴片电阻" required></label>
+        <label>制造商型号<input name="manufacturer_part" placeholder="例如 RC0603JR-0710KL"></label>
+        <label>品牌<input name="brand"></label>
+        <label>封装<input name="package" placeholder="例如 0603"></label>
+        <label>单位<select name="unit"><option>个</option><option>片</option><option>只</option><option>米</option><option>卷</option><option>盒</option></select></label>
+        <label class="wide">分类<select name="category_id" id="manualCategory"><option value="">未分类</option></select></label>
+        <label>初始数量<input name="quantity" type="number" min="0" step="any" placeholder="默认 1"></label>
+        <label>存放仓位<select name="location_id" id="manualLocation"><option value="">使用默认仓位</option></select></label>
+        <label>最低库存<input name="min_stock" type="number" min="0" step="any" value="0"></label>
+        <label>来源<input name="source" placeholder="淘宝、拆机料等"></label>
+        <label class="wide">备注<textarea name="notes" rows="3"></textarea></label>
+      </div>
+      <div class="modal-actions"><button type="button" class="button ghost close-dialog">取消</button><button class="button primary" type="submit">添加并入库</button></div>
+    </form>
+  </dialog>
+
+  <dialog id="detailDialog" class="modal detail-modal">
+    <div id="detailContent"></div>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/app.js"></script>
+  <script src="/enhancements.js"></script>
+</body>
+</html>

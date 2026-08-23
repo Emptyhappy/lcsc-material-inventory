@@ -1,0 +1,22 @@
+.category-order-card { grid-column: 1 / -1; }
+.category-order-card > label { max-width: 520px; }
+.category-order-list {
+  display: grid; grid-template-columns: repeat(2, minmax(260px, 1fr)); gap: 7px;
+  max-height: 420px; padding: 10px; overflow: auto; border: 1px solid var(--line);
+  border-radius: 8px; background: #fafbfc;
+}
+.category-order-row {
+  min-width: 0; display: grid; grid-template-columns: 25px minmax(0, 1fr) 30px 30px;
+  align-items: center; gap: 5px; min-height: 38px; padding: 4px 6px;
+  border: 1px solid #e8edf2; border-radius: 7px; background: #fff;
+}
+.category-order-index { color: #9aa5b2; font-size: 11px; text-align: center; }
+.category-order-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #465568; }
+.category-order-row button {
+  width: 28px; height: 28px; padding: 0; border: 1px solid #dfe5eb; border-radius: 6px;
+  color: #55708b; background: #f7f9fb;
+}
+.category-order-row button:hover:not(:disabled) { color: var(--blue); border-color: #9bcaf4; background: var(--blue-soft); }
+.category-order-row button:disabled { opacity: .3; cursor: default; }
+.category-order-empty { grid-column: 1 / -1; padding: 30px; color: var(--muted); text-align: center; }
+@media (max-width: 760px) { .category-order-list { grid-template-columns: 1fr; } }
