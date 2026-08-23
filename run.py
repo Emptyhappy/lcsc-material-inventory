@@ -6,8 +6,8 @@ import time
 import webbrowser
 from pathlib import Path
 
-from material_system.managed_http_server import create_managed_server
-from material_system.managed_repository import ManagedInventoryRepository
+from material_system.deletable_http_server import create_deletable_server
+from material_system.deletable_repository import DeletableInventoryRepository
 from material_system.taxonomy import fetch_lcsc_categories
 from material_system.startup_tasks import cache_existing_images
 
@@ -15,7 +15,7 @@ from material_system.startup_tasks import cache_existing_images
 ROOT = Path(__file__).resolve().parent
 
 
-def sync_categories_once(repository: ManagedInventoryRepository) -> None:
+def sync_categories_once(repository: DeletableInventoryRepository) -> None:
     try:
         settings = repository.get_settings()
         if not settings.get("last_category_sync"):
@@ -35,8 +35,8 @@ def main() -> None:
     args = parser.parse_args()
 
     data_dir = Path(args.data_dir)
-    repository = ManagedInventoryRepository(data_dir / "materials.db")
-    server = create_managed_server(args.host, args.port, repository, ROOT / "web")
+    repository = DeletableInventoryRepository(data_dir / "materials.db")
+    server = create_deletable_server(args.host, args.port, repository, ROOT / "web")
     url = f"http://{args.host}:{args.port}"
     print(f"物料管理系统已启动：{url}")
     print(f"数据库：{repository.path}")

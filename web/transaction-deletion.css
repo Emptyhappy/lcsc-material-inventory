@@ -1,0 +1,8 @@
+.transaction-manager-actions .transaction-delete-all { margin-left: 0; }
+.transaction-manager-editor {
+  grid-template-columns: minmax(180px, 1fr) auto auto auto;
+}
+
+@media (max-width: 720px) {
+  .transaction-manager-editor { grid-template-columns: 1fr; }
+}

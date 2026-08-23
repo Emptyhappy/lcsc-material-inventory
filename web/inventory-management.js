@@ -149,6 +149,7 @@
 
   async function openTransactionManager(materialId = null) {
     managerMaterialId = materialId == null ? null : Number(materialId);
+    manager.dataset.materialId = managerMaterialId == null ? "" : String(managerMaterialId);
     await renderTransactionManager();
     if (!manager.open) manager.showModal();
   }

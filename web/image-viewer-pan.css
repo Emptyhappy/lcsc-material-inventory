@@ -1,0 +1,16 @@
+.image-viewer-v2 .image-viewer-stage { position: relative; touch-action: none; user-select: none; }
+.image-viewer-v2 .image-viewer-stage img { cursor: zoom-in; will-change: transform; }
+.image-viewer-v2 .image-viewer-stage img.can-pan { cursor: grab; }
+.image-viewer-v2 .image-viewer-stage img.dragging { cursor: grabbing; transition: none; }
+.image-viewer-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  padding: 7px 11px;
+  border-radius: 14px;
+  color: #dce8f2;
+  background: #152536c9;
+  font-size: 11px;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
