@@ -93,7 +93,10 @@
       }
       return;
     }
-    const options = response.data;
+    const options = response.data || {};
+    const locations = Array.isArray(options.locations) && options.locations.length
+      ? options.locations
+      : [{ id: options.default_location_id || "", name: options.default_location_name || "默认仓位" }];
     const product = extract();
     closeModal();
     const backdrop = document.createElement("div");
@@ -107,7 +110,7 @@
         </div>
         <div class="mi-form-grid">
           <label>入库数量<input name="quantity" type="number" min="0.001" step="any" value="${Number(options.default_quantity) || 1}" required></label>
-          <label>入库仓位<select name="location_id">${options.locations.map(item => `<option value="${item.id}" ${item.id === options.default_location_id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}</select></label>
+          <label>入库仓位<select name="location_id">${locations.map(item => `<option value="${item.id}" ${item.id === options.default_location_id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}</select></label>
           <label>最低库存<input name="min_stock" type="number" min="0" step="any" value="0"></label>
           <label>单位<select name="unit"><option>个</option><option>片</option><option>只</option><option>米</option><option>卷</option><option>盒</option></select></label>
           <label class="wide">入库备注<input name="notes" placeholder="例如 项目A备料、2026年采购"></label>
@@ -137,7 +140,7 @@
       }
       closeModal();
       const data = result.data;
-      notify(`${data.created ? "已创建" : "已继续入库"}：${data.name} +${data.added_quantity}，${options.locations.find(item => item.id === product.location_id)?.name || "所选仓位"}`);
+      notify(`${data.created ? "已创建" : "已继续入库"}：${data.name} +${data.added_quantity}，${locations.find(item => Number(item.id || 0) === product.location_id)?.name || "所选仓位"}`);
     });
   }
 
