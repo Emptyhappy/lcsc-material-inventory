@@ -113,7 +113,8 @@
           <label>入库仓位<select name="location_id">${locations.map(item => `<option value="${item.id}" ${item.id === options.default_location_id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}</select></label>
           <label>最低库存<input name="min_stock" type="number" min="0" step="any" value="0"></label>
           <label>单位<select name="unit"><option>个</option><option>片</option><option>只</option><option>米</option><option>卷</option><option>盒</option></select></label>
-          <label class="wide">入库备注<input name="notes" placeholder="例如 项目A备料、2026年采购"></label>
+          <label class="wide">入库备注<input name="transaction_note" placeholder="只记录到本次入库流水，例如 2026年采购"></label>
+          <label class="wide">元器件备注<input name="material_notes" placeholder="长期保存在元器件档案，例如 项目A专用"></label>
         </div>
         <div class="mi-modal-actions"><button type="button" data-close>取消</button><button class="primary" type="submit">确认加入并入库</button></div>
       </form>`;
@@ -130,7 +131,8 @@
       product.location_id = Number(values.location_id);
       product.min_stock = Number(values.min_stock || 0);
       product.unit = values.unit;
-      product.notes = values.notes;
+      product.transaction_note = values.transaction_note;
+      product.material_notes = values.material_notes;
       const result = await chrome.runtime.sendMessage({ type: "IMPORT_LCSC", payload: product });
       if (!result?.ok) {
         submit.disabled = false;

@@ -45,6 +45,7 @@ class TaxonomyTests(unittest.TestCase):
         result = parse_lcsc_categories(html)
         self.assertEqual([item["external_id"] for item in result], ["1", "312", "313"])
         self.assertEqual(result[2]["parent_external_id"], "312")
+        self.assertEqual(result[1]["sort_order"], 0)
 
 
 class RepositoryTests(unittest.TestCase):

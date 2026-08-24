@@ -49,7 +49,7 @@ def parse_lcsc_categories(html: str) -> list[dict[str, Any]]:
         }
     ]
 
-    def visit(node: dict[str, Any], default_parent: str) -> None:
+    def visit(node: dict[str, Any], default_parent: str, sibling_order: int) -> None:
         external_id = str(node["catalogId"])
         parent_id = str(node.get("parentId") or default_parent)
         result.append(
@@ -58,16 +58,16 @@ def parse_lcsc_categories(html: str) -> list[dict[str, Any]]:
                 "parent_external_id": parent_id,
                 "name": node["catalogName"],
                 "code": node.get("catalogCode") or "",
-                "sort_order": int(node.get("sort") or 0),
+                "sort_order": sibling_order,
                 "source_count": int(node.get("groupProductCount") or 0),
                 "url": f"https://list.szlcsc.com/catalog/{external_id}.html",
             }
         )
-        for child in node.get("sonCatalogList") or []:
-            visit(child, external_id)
+        for child_order, child in enumerate(node.get("sonCatalogList") or []):
+            visit(child, external_id, child_order)
 
-    for root in roots:
-        visit(root, "1")
+    for root_order, root in enumerate(roots):
+        visit(root, "1", root_order)
     return result
 
 

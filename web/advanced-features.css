@@ -1,0 +1,33 @@
+.material-bulk-controls { margin-left: auto; display: flex; align-items: center; }
+.material-bulk-bar { display: flex; align-items: center; gap: 8px; }
+.material-bulk-bar strong { color: #496079; font-size: 12px; }
+.material-select-column, .material-select-cell { width: 38px; padding-right: 0 !important; text-align: center; }
+.material-select-column input, .material-select-cell input { width: 15px; height: 15px; cursor: pointer; }
+.material-actions-heading { min-width: 110px; text-align: right; }
+.material-row-actions { display: flex; align-items: center; justify-content: flex-end; gap: 7px; white-space: nowrap; }
+.material-delete-action {
+  min-height: 28px; padding: 4px 9px; border: 1px solid #efc8cd; border-radius: 6px;
+  color: #bd3543; background: #fff7f8; font-size: 11px;
+}
+.material-delete-action:hover { border-color: #db7e88; background: #ffeaed; }
+.bulk-mode tbody tr { cursor: pointer; }
+.bulk-mode tbody tr:has([data-material-select]:checked) { background: #f1f8ff; }
+.detail-content-actions { display: flex; align-items: center; gap: 8px; }
+.detail-edit-material { margin-left: auto; margin-right: 7px; }
+.material-notes-section p {
+  margin: 0; padding: 10px 12px; border-radius: 8px; color: #4c5e72; background: #f6f8fa;
+  line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.material-edit-dialog { width: min(780px, calc(100vw - 30px)); }
+.material-edit-dialog form { max-height: min(850px, calc(100vh - 30px)); overflow: auto; }
+.material-edit-grid { padding-bottom: 4px; }
+.material-image-input small { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; }
+.category-order-actions { display: flex; align-items: center; gap: 10px; margin: 9px 0; }
+.category-order-actions span { color: #6d7c8d; font-size: 12px; }
+@media (max-width: 760px) {
+  .material-bulk-controls { width: 100%; margin-left: 0; }
+  .material-bulk-bar { flex-wrap: wrap; }
+  .material-actions-heading { min-width: 92px; }
+  .material-row-actions { gap: 4px; }
+  .category-order-actions { align-items: flex-start; flex-direction: column; }
+}

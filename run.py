@@ -6,8 +6,8 @@ import time
 import webbrowser
 from pathlib import Path
 
-from material_system.backup_http_server import create_backup_server
-from material_system.backup_repository import BackupInventoryRepository
+from material_system.advanced_inventory_http_server import create_advanced_inventory_server
+from material_system.advanced_inventory_repository import AdvancedInventoryRepository
 from material_system.taxonomy import fetch_lcsc_categories
 from material_system.startup_tasks import cache_existing_images
 
@@ -15,7 +15,7 @@ from material_system.startup_tasks import cache_existing_images
 ROOT = Path(__file__).resolve().parent
 
 
-def sync_categories_once(repository: BackupInventoryRepository) -> None:
+def sync_categories_once(repository: AdvancedInventoryRepository) -> None:
     try:
         settings = repository.get_settings()
         if not settings.get("last_category_sync"):
@@ -35,8 +35,8 @@ def main() -> None:
     args = parser.parse_args()
 
     data_dir = Path(args.data_dir)
-    repository = BackupInventoryRepository(data_dir / "materials.db")
-    server = create_backup_server(args.host, args.port, repository, ROOT / "web")
+    repository = AdvancedInventoryRepository(data_dir / "materials.db")
+    server = create_advanced_inventory_server(args.host, args.port, repository, ROOT / "web")
     url = f"http://{args.host}:{args.port}"
     print(f"物料管理系统已启动：{url}")
     print(f"数据库：{repository.path}")

@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="/image-viewer-pan.css">
   <link rel="stylesheet" href="/inventory-management.css">
   <link rel="stylesheet" href="/transaction-deletion.css">
+  <link rel="stylesheet" href="/advanced-features.css">
   <link rel="stylesheet" href="/backup-management.css">
 </head>
 <body>
@@ -145,7 +146,9 @@
         <label>存放仓位<select name="location_id" id="manualLocation"><option value="">使用默认仓位</option></select></label>
         <label>最低库存<input name="min_stock" type="number" min="0" step="any" value="0"></label>
         <label>来源<input name="source" placeholder="淘宝、拆机料等"></label>
-        <label class="wide">备注<textarea name="notes" rows="3"></textarea></label>
+        <label class="wide">入库备注<textarea name="transaction_note" rows="2" placeholder="只记录在这次初始入库流水中"></textarea></label>
+        <label class="wide">元器件备注<textarea name="notes" rows="3" placeholder="长期保存在元器件档案中"></textarea></label>
+        <label class="wide">物料图片<input name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif"><small>可选，支持 JPG、PNG、WEBP、GIF，最大 8MB</small></label>
       </div>
       <div class="modal-actions"><button type="button" class="button ghost close-dialog">取消</button><button class="button primary" type="submit">添加并入库</button></div>
     </form>
@@ -162,5 +165,8 @@
   <script src="/inventory-management.js"></script>
   <script src="/transaction-deletion.js"></script>
   <script src="/backup-management.js"></script>
+  <script src="/backup-merge.js"></script>
+  <script src="/category-official-order.js"></script>
+  <script src="/material-management.js"></script>
 </body>
 </html>

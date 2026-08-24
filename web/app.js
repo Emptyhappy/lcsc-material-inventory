@@ -337,16 +337,22 @@ function bindEvents() {
     const button = event.submitter;
     button.disabled = true;
     const form = new FormData(event.currentTarget);
-    const payload = Object.fromEntries([...form.entries()].filter(([, value]) => value !== ""));
+    const imageFile = form.get("image");
+    const payload = Object.fromEntries([...form.entries()].filter(([, value]) => value !== "" && !(value instanceof File)));
     for (const key of ["quantity", "min_stock", "category_id", "location_id"]) {
       if (key in payload) payload[key] = Number(payload[key]);
     }
     if (payload.source) payload.notes = `${payload.notes ? `${payload.notes}；` : ""}来源：${payload.source}`;
     try {
-      await api("/api/materials/manual", { method: "POST", body: payload });
+      const created = await api("/api/materials/manual", { method: "POST", body: payload });
+      let imageError = "";
+      if (imageFile instanceof File && imageFile.size) {
+        try { await window.uploadMaterialImage(created.id, imageFile); }
+        catch (error) { imageError = error.message; }
+      }
       event.currentTarget.reset();
       $("#manualDialog").close();
-      toast("物料已添加并入库");
+      toast(imageError ? `物料已添加，但图片失败：${imageError}` : "物料已添加并入库", Boolean(imageError));
       await Promise.all([loadMaterials(), loadDashboard()]);
       const categories = await api("/api/categories");
       state.categories = categories.categories; state.relations = categories.relations; renderCategoryTree();
