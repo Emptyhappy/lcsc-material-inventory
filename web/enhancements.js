@@ -6,9 +6,9 @@
   card.id = "categoryOrderCard";
   card.className = "panel settings-card category-order-card";
   card.innerHTML = `
-    <h2>分类显示顺序</h2>
-    <p>选择一个父分类，然后用上移、下移调整其子分类在左侧分类树中的顺序。</p>
-    <label>父分类<select id="categoryOrderParent"></select></label>
+    <h2>分类显示顺序（含一级父分类）</h2>
+    <p>选择“电子元器件”可调整一级父分类顺序；选择其他父分类可调整它下面的子分类。</p>
+    <label>要调整的父分类<select id="categoryOrderParent"></select></label>
     <div id="categoryOrderList" class="category-order-list"></div>`;
   settingsGrid.append(card);
 
@@ -31,7 +31,12 @@
       .filter(([, ids]) => ids.length >= 2)
       .map(([parentId, ids]) => ({ parent: byId.get(parentId), count: ids.length }))
       .filter(item => item.parent)
-      .sort((a, b) => a.parent.name.localeCompare(b.parent.name, "zh-CN"));
+      .sort((a, b) => {
+        const aIsRoot = a.parent.source === "lcsc" && a.parent.external_id === "1";
+        const bIsRoot = b.parent.source === "lcsc" && b.parent.external_id === "1";
+        return Number(bIsRoot) - Number(aIsRoot)
+          || a.parent.name.localeCompare(b.parent.name, "zh-CN");
+      });
   }
 
   function renderParents(preferredId = null) {

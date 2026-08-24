@@ -8,12 +8,12 @@
 - 自动读取 C 编号、制造商型号、品牌、封装、规格参数、图片、数据手册、价格和分类
 - 重复 C 编号不会重复建档，再次点击会继续入库 `+1`
 - 请求防重和刚添加流水撤销
-- 立创完整分类树同步、父子分类筛选和分类库存统计
+- 立创完整分类树同步、父子分类筛选、分类库存统计和各层级显示顺序调整
 - 手动添加非立创物料
 - 默认数量、默认仓位和自定义仓位
 - 入库、出库、库存调整及完整流水
 - 名称、型号、内部编号和 C 编号搜索
-- 低库存筛选、CSV 导出和 SQLite 单文件备份
+- 低库存筛选、CSV 导出，以及包含数据库和本地图片的完整备份导出/恢复
 - 不依赖第三方 Python 包
 
 ## 启动物料系统
@@ -32,7 +32,7 @@ http://127.0.0.1:8765
 data/materials.db
 ```
 
-备份时先关闭启动窗口，再复制这个数据库文件。
+在“系统设置 → 完整数据备份”中可以直接导出 ZIP。备份包含物料、库存、全部流水、仓位、设置、分类顺序和本地元器件图片；恢复前系统会自动把当前数据保存到 `data/backups`。
 
 也可以在命令行启动：
 
@@ -80,8 +80,9 @@ python run.py
 ```powershell
 python -m unittest discover -s tests -v
 node --check web/app.js
+node --check web/backup-management.js
 node --check extension/content-script.js
-node --check extension/service-worker.js
+node --check extension/service-worker-v2.js
 ```
 
 ## 目录结构

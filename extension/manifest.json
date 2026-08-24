@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "立创物料一键入库",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "在立创商城商品页一键加入本地物料管理系统。",
   "permissions": ["storage"],
   "host_permissions": [

@@ -1,0 +1,22 @@
+.backup-card { grid-column: 1 / -1; }
+.backup-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.backup-actions .danger-outline {
+  color: #ba3b42; border: 1px solid #e5a6aa; background: #fff;
+}
+.backup-actions .danger-outline:hover:not(:disabled) {
+  color: #982e34; border-color: #cf777d; background: #fff5f5;
+}
+.backup-actions button:disabled { opacity: .55; cursor: wait; }
+.backup-note {
+  display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; padding: 11px 13px;
+  border: 1px solid #cfe3f6; border-radius: 8px; color: #52677b; background: #f5faff;
+}
+.backup-note strong { flex: 0 0 auto; color: #28689e; }
+.backup-note code { color: #355d80; }
+.backup-status { min-height: 20px; margin-top: 10px; color: #39744c; font-size: 13px; }
+.backup-status.error { color: #b8323b; }
+@media (max-width: 560px) {
+  .backup-actions { align-items: stretch; }
+  .backup-actions .button { width: 100%; }
+  .backup-note { flex-direction: column; gap: 4px; }
+}
