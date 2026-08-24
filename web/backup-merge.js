@@ -29,7 +29,8 @@
     const file = input.files?.[0];
     if (!file) return;
     if (!confirm(
-      `把“${file.name}”中的物料添加到当前系统吗？\n\n当前物料不会删除；重复的 C 编号或相同手动物料会跳过，备份独有物料会连同库存、流水、分类和图片一起加入。`
+      `把“${file.name}”中的物料添加到当前系统吗？\n\n当前物料不会删除；重复的 C 编号或相同手动物料会跳过，备份独有物料会连同库存、流水、分类和图片一起加入。${
+        window.autoSafetyBackupMessage?.("backup_merge") || "系统会先自动生成安全备份。"}`
     )) return;
     mergeButton.disabled = true;
     restoreButton.disabled = true;

@@ -87,11 +87,12 @@
       openTransactionManager(item.id);
     });
     recentSection.querySelector("[data-detail-action='clear']").addEventListener("click", async () => {
-      if (!confirm("清空后流水会从列表隐藏，但不会改变当前库存，并可在管理流水中恢复。确定继续吗？")) return;
+      const safety = window.autoSafetyBackupMessage?.("transaction_clear") || "系统会先自动生成安全备份。";
+      if (!confirm(`清空后流水会从列表隐藏，但不会改变当前库存，并可在管理流水中恢复。${safety}确定继续吗？`)) return;
       const result = await api(`/api/materials/${item.id}/transactions/clear`, {
         method: "POST", body: {},
       });
-      toast(`已清空 ${result.archived_count} 条流水，库存保持不变`);
+      toast(`已清空 ${result.archived_count} 条流水，库存保持不变${result.safety_backup ? "；操作前已备份" : "；本次未自动备份"}`);
       await refreshVisibleData();
       $("#detailDialog").close();
       await openDetail(item.id);
@@ -162,12 +163,13 @@
     if (action === "close") { manager.close(); return; }
     if (action === "clear") {
       const scope = managerMaterialId == null ? "全部" : "该物料";
-      if (!confirm(`确定清空${scope}显示中的流水吗？库存不会改变，之后仍可恢复。`)) return;
+      const safety = window.autoSafetyBackupMessage?.("transaction_clear") || "系统会先自动生成安全备份。";
+      if (!confirm(`确定清空${scope}显示中的流水吗？库存不会改变，之后仍可恢复。${safety}`)) return;
       const path = managerMaterialId == null
         ? "/api/transactions/clear"
         : `/api/materials/${managerMaterialId}/transactions/clear`;
       const result = await api(path, { method: "POST", body: {} });
-      toast(`已清空 ${result.archived_count} 条流水，库存保持不变`);
+      toast(`已清空 ${result.archived_count} 条流水，库存保持不变${result.safety_backup ? "；操作前已备份" : "；本次未自动备份"}`);
       await Promise.all([renderTransactionManager(), refreshVisibleData()]);
       return;
     }
@@ -207,7 +209,7 @@
 
   const manualDescription = document.createElement("label");
   manualDescription.className = "wide";
-  manualDescription.innerHTML = `物料描述<textarea name="description" rows="3" placeholder="手动物料可以填写用途、参数摘要或采购说明"></textarea>`;
+  manualDescription.innerHTML = `物料描述<textarea name="description" rows="1" placeholder="手动物料可以填写用途、参数摘要或采购说明"></textarea>`;
   $("#manualForm .form-grid").append(manualDescription);
 
   async function pollChanges() {

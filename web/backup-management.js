@@ -48,7 +48,8 @@
     const file = fileInput.files?.[0];
     if (!file) return;
     const approved = confirm(
-      `确定恢复“${file.name}”吗？\n\n当前物料、库存、流水、分类、设置和图片将被备份包替换。恢复前系统会自动保存一份当前数据的安全备份。`
+      `确定恢复“${file.name}”吗？\n\n当前物料、库存、流水、分类、设置和图片将被备份包替换。${
+        window.autoSafetyBackupMessage?.("backup_restore") || "系统会先自动生成安全备份。"}`
     );
     if (!approved) return;
 

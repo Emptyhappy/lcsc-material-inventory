@@ -110,17 +110,36 @@
         </div>
         <div class="mi-form-grid">
           <label>入库数量<input name="quantity" type="number" min="0.001" step="any" value="${Number(options.default_quantity) || 1}" required></label>
-          <label>入库仓位<select name="location_id">${locations.map(item => `<option value="${item.id}" ${item.id === options.default_location_id ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}</select></label>
+          <label>入库仓位<select name="location_id">${locations.map(item => `<option value="${item.id}" ${Number(item.id) === Number(options.default_location_id) ? "selected" : ""}>${escapeHtml(item.name)}</option>`).join("")}<option value="__new__">＋ 新建仓位…</option></select></label>
+          <label class="wide mi-new-location mi-hidden">新仓位名称<input name="new_location_name" maxlength="120" placeholder="例如 A柜-03盒-02格"></label>
           <label>最低库存<input name="min_stock" type="number" min="0" step="any" value="0"></label>
           <label>单位<select name="unit"><option>个</option><option>片</option><option>只</option><option>米</option><option>卷</option><option>盒</option></select></label>
-          <label class="wide">入库备注<input name="transaction_note" placeholder="只记录到本次入库流水，例如 2026年采购"></label>
-          <label class="wide">元器件备注<input name="material_notes" placeholder="长期保存在元器件档案，例如 项目A专用"></label>
+          <label class="wide">入库备注<textarea name="transaction_note" rows="1" placeholder="只记录到本次入库流水，例如 2026年采购"></textarea></label>
+          <label class="wide">元器件备注<textarea name="material_notes" rows="1" placeholder="长期保存在元器件档案，例如 项目A专用"></textarea></label>
         </div>
         <div class="mi-modal-actions"><button type="button" data-close>取消</button><button class="primary" type="submit">确认加入并入库</button></div>
       </form>`;
     document.body.append(backdrop);
     backdrop.querySelectorAll("[data-close]").forEach(button => button.addEventListener("click", closeModal));
     backdrop.addEventListener("click", event => { if (event.target === backdrop) closeModal(); });
+    const locationSelect = backdrop.querySelector("[name='location_id']");
+    const newLocationLabel = backdrop.querySelector(".mi-new-location");
+    const newLocationInput = backdrop.querySelector("[name='new_location_name']");
+    function toggleNewLocation() {
+      const creating = locationSelect.value === "__new__";
+      newLocationLabel.classList.toggle("mi-hidden", !creating);
+      newLocationInput.required = creating;
+      if (creating) newLocationInput.focus();
+    }
+    locationSelect.addEventListener("change", toggleNewLocation);
+    function grow(textarea) {
+      textarea.style.height = "auto";
+      textarea.style.height = `${Math.max(textarea.scrollHeight, 39)}px`;
+    }
+    backdrop.querySelectorAll("textarea").forEach(textarea => {
+      grow(textarea);
+      textarea.addEventListener("input", () => grow(textarea));
+    });
     backdrop.querySelector("form").addEventListener("submit", async event => {
       event.preventDefault();
       const submit = event.submitter;
@@ -128,7 +147,24 @@
       submit.textContent = "正在保存并下载图片…";
       const values = Object.fromEntries(new FormData(event.currentTarget).entries());
       product.quantity = Number(values.quantity);
-      product.location_id = Number(values.location_id);
+      let selectedLocationName = "所选仓位";
+      if (values.location_id === "__new__") {
+        const name = String(values.new_location_name || "").trim();
+        const locationResult = await chrome.runtime.sendMessage({ type: "CREATE_LOCATION", name });
+        if (!locationResult?.ok) {
+          submit.disabled = false;
+          submit.textContent = "确认加入并入库";
+          notify(locationResult?.error || "新建仓位失败", true);
+          return;
+        }
+        product.location_id = Number(locationResult.data.id);
+        selectedLocationName = locationResult.data.name;
+      } else {
+        product.location_id = Number(values.location_id);
+        selectedLocationName = locations.find(
+          item => Number(item.id || 0) === product.location_id
+        )?.name || "所选仓位";
+      }
       product.min_stock = Number(values.min_stock || 0);
       product.unit = values.unit;
       product.transaction_note = values.transaction_note;
@@ -142,7 +178,7 @@
       }
       closeModal();
       const data = result.data;
-      notify(`${data.created ? "已创建" : "已继续入库"}：${data.name} +${data.added_quantity}，${locations.find(item => Number(item.id || 0) === product.location_id)?.name || "所选仓位"}`);
+      notify(`${data.created ? "已创建" : "已继续入库"}：${data.name} +${data.added_quantity}，${selectedLocationName}`);
     });
   }
 

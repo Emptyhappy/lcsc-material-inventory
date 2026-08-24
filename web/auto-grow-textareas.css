@@ -1,0 +1,6 @@
+textarea {
+  min-height: 42px;
+  overflow-y: hidden;
+  resize: none;
+  line-height: 1.55;
+}

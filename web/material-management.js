@@ -104,15 +104,19 @@
     const items = ids.map(id => latestMaterials.get(id)).filter(Boolean);
     const names = items.slice(0, 3).map(item => item.name).join("、");
     const suffix = items.length > 3 ? ` 等 ${items.length} 种物料` : "";
+    const operation = ids.length > 1 ? "material_batch_delete" : "material_single_delete";
+    const safetyMessage = window.autoSafetyBackupMessage?.(operation) || "系统会先自动生成安全备份。";
     if (!confirm(
-      `确定删除 ${names}${suffix} 吗？\n\n物料档案、库存和该物料全部流水都会删除。系统会先自动生成安全备份。`
+      `确定删除 ${names}${suffix} 吗？\n\n物料档案、库存和该物料全部流水都会删除。${safetyMessage}`
     )) return;
     const result = await api("/api/materials/delete-batch", {
       method: "POST",
       body: { material_ids: ids },
     });
     ids.forEach(id => selectedIds.delete(id));
-    toast(`已删除 ${result.deleted_count} 种物料，删除前数据已自动备份`);
+    toast(result.safety_backup
+      ? `已删除 ${result.deleted_count} 种物料，删除前数据已自动备份`
+      : `已删除 ${result.deleted_count} 种物料，本次未生成自动安全备份`);
     await refreshAfterChange();
   }
 

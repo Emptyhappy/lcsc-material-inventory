@@ -43,19 +43,21 @@
       if (button.dataset.deleteAction === "one") {
         const item = button.closest("[data-transaction-id]");
         const transactionId = Number(item.dataset.transactionId);
-        if (!confirm("确定删除这条流水吗？删除后不会改变当前库存，但无法在管理界面恢复。")) return;
-        await api(`/api/transactions/${transactionId}/delete`, { method: "POST", body: {} });
+        const safety = window.autoSafetyBackupMessage?.("transaction_single_delete") || "系统会先自动生成安全备份。";
+        if (!confirm(`确定删除这条流水吗？删除后不会改变当前库存，但无法在管理界面恢复。${safety}`)) return;
+        const result = await api(`/api/transactions/${transactionId}/delete`, { method: "POST", body: {} });
         item.remove();
-        toast("流水已删除，库存保持不变");
+        toast(result.safety_backup ? "流水已删除，库存保持不变；删除前已备份" : "流水已删除，库存保持不变；本次未自动备份");
       } else {
         const materialId = manager.dataset.materialId;
         const scope = materialId ? "该物料的全部流水" : "全部库存流水";
-        if (!confirm(`确定删除${scope}吗？删除后库存保持不变，且无法在管理界面恢复。`)) return;
+        const safety = window.autoSafetyBackupMessage?.("transaction_bulk_delete") || "系统会先自动生成安全备份。";
+        if (!confirm(`确定删除${scope}吗？删除后库存保持不变，且无法在管理界面恢复。${safety}`)) return;
         const path = materialId
           ? `/api/materials/${materialId}/transactions/delete-all`
           : "/api/transactions/delete-all";
         const result = await api(path, { method: "POST", body: {} });
-        toast(`已删除 ${result.deleted_count} 条流水，库存保持不变`);
+        toast(`已删除 ${result.deleted_count} 条流水，库存保持不变${result.safety_backup ? "；删除前已备份" : "；本次未自动备份"}`);
         manager.close();
       }
       await refreshPages();

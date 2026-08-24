@@ -1,0 +1,15 @@
+.material-notes-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.material-notes-heading h3 { margin: 0; }
+.material-notes-section p { margin-bottom: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.material-notes-editor { padding: 20px; }
+.material-notes-editor label { display: block; color: #536276; font-size: 13px; }
+.material-notes-editor textarea {
+  width: 100%; box-sizing: border-box; margin-top: 8px; padding: 10px 12px;
+  border: 1px solid #dfe5eb; border-radius: 8px; outline: none; font: inherit;
+}
+.material-notes-editor textarea:focus { border-color: #7bbbf0; box-shadow: 0 0 0 3px rgba(20,132,226,.1); }

@@ -24,7 +24,7 @@ def build_handler(
     repository: InventoryRepository, static_dir: Path
 ) -> type[BaseHTTPRequestHandler]:
     class InventoryHandler(BaseHTTPRequestHandler):
-        server_version = "MaterialInventory/0.1"
+        server_version = "MaterialInventory/0.5.0"
 
         def log_message(self, fmt: str, *args: Any) -> None:
             print(f"[{self.log_date_time_string()}] {fmt % args}")

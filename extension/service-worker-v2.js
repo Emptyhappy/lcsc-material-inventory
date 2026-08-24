@@ -39,6 +39,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
       .catch(error => sendResponse({ ok: false, error: error.message }));
     return true;
   }
+  if (message.type === "CREATE_LOCATION") {
+    localRequest("/api/locations", { method: "POST", body: JSON.stringify({ name: message.name }) })
+      .then(data => sendResponse({ ok: true, data }))
+      .catch(error => sendResponse({ ok: false, error: error.message }));
+    return true;
+  }
   if (message.type === "UNDO_TRANSACTION") {
     localRequest(`/api/transactions/${message.transactionId}/undo`, {
       method: "POST", body: "{}",

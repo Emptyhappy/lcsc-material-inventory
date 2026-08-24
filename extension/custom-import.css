@@ -20,8 +20,10 @@
 .mi-product-preview strong,.mi-product-preview span { display: block; }.mi-product-preview strong { max-width: 480px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 14px; }.mi-product-preview span { margin-top: 4px; color: #758293; font-size: 11px; }
 .mi-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; padding: 18px 19px; }
 .mi-form-grid label { color: #536276; font-size: 12px; }.mi-form-grid label.wide { grid-column: 1 / -1; }
-.mi-form-grid input,.mi-form-grid select { width: 100%; box-sizing: border-box; height: 39px; margin-top: 6px; padding: 0 10px; border: 1px solid #dfe5eb; border-radius: 7px; outline: 0; background: #fff; }
-.mi-form-grid input:focus,.mi-form-grid select:focus { border-color: #7bbbf0; box-shadow: 0 0 0 3px rgba(20,132,226,.1); }
+.mi-form-grid input,.mi-form-grid select,.mi-form-grid textarea { width: 100%; box-sizing: border-box; min-height: 39px; margin-top: 6px; padding: 0 10px; border: 1px solid #dfe5eb; border-radius: 7px; outline: 0; background: #fff; font-family: inherit; }
+.mi-form-grid textarea { padding: 9px 10px; overflow-y: hidden; resize: none; line-height: 1.55; }
+.mi-form-grid input:focus,.mi-form-grid select:focus,.mi-form-grid textarea:focus { border-color: #7bbbf0; box-shadow: 0 0 0 3px rgba(20,132,226,.1); }
+.mi-hidden { display: none !important; }
 .mi-modal-actions { display: flex; justify-content: flex-end; gap: 8px; padding: 13px 19px; border-top: 1px solid #e5eaf0; background: #fafbfc; }
 .mi-modal-actions button { min-height: 38px; padding: 0 15px; border: 1px solid #dce3e9; border-radius: 7px; color: #536275; background: #fff; cursor: pointer; }
 .mi-modal-actions button.primary { border-color: #1484e2; color: #fff; background: #1484e2; }.mi-modal-actions button:disabled { opacity: .6; cursor: wait; }
